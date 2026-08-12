@@ -1,0 +1,19 @@
+﻿{
+    "name": "QuizCraft Pro",
+    "short_name": "QuizCraft",
+    "description": "Ứng dụng trắc nghiệm đa AI - tạo đề, nhập file, làm bài offline",
+    "start_url": "./TracnghiemAI.html",
+    "display": "standalone",
+    "background_color": "#090d16",
+    "theme_color": "#7c3aed",
+    "orientation": "portrait-primary",
+    "lang": "vi",
+    "icons": [
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%237c3aed' width='100' height='100' rx='20'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='white'>⚡</text></svg>",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        }
+    ]
+}
