@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizCraft Pro - Multi-AI & File Edition</title>
+    <meta name="description" content="Ứng dụng trắc nghiệm đa AI - tạo đề, nhập file Excel/JSON, làm bài offline">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="TracnghiemAI.css?v=20">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.11.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+</head>
+<body>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <div id="ai-success-modal" class="ai-success-modal hide" role="dialog" aria-modal="true">
+        <div class="ai-success-dialog">
+            <div class="ai-success-icon">✅</div>
+            <p id="ai-success-message"></p>
+            <button id="ai-success-ok" class="btn-primary">OK</button>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="app-header">
+            <div class="brand">
+                <div class="brand-logo">⚡</div>
+                <div>
+                    <div class="brand-title">QuizCraft Multi-AI</div>
+                    <div class="brand-subtitle">Đánh giá thông minh, học tập hiệu quả</div>
+                </div>
+            </div>
+            <div class="audio-controls">
+                <span>🎵</span>
+                <select id="bgm-select" class="music-select">
+                    <option value="track1">Nhạc nền 1</option>
+                    <option value="track2">Nhạc nền 2</option>
+                    <option value="track3">Nhạc nền 3</option>
+                </select>
+                <button id="sound-btn" class="sound-btn" aria-label="Bật/Tắt nhạc nền">
+                    <span id="sound-icon">⏸</span>
+                    <span id="sound-text">Bật Nhạc</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="nav-pills">
+            <button id="tab-play" class="nav-item active">🎮 Làm Bài</button>
+            <button id="tab-ai" class="nav-item">🤖 Tạo câu hỏi bằng AI</button>
+            <button id="tab-upload" class="nav-item">📁 Nhập File</button>
+            <button id="tab-library" class="nav-item">📚 Thư Viện</button>
+        </div>
+
+        <!-- PLAY SCREEN -->
+        <div id="screen-play">
+            <div id="start-screen" class="start-card">
+                <div class="start-hero-icon">◉</div>
+                <div class="start-badge">Bắt đầu trải nghiệm</div>
+                <h2 class="start-title">Sẵn sàng chinh phục thử thách?</h2>
+                <p class="start-info secondary">
+                    Khám phá kiến thức, bứt phá điểm số và nhận phản hồi tức thì qua <b id="total-questions-tag" style="color: var(--cyan);">1</b> câu hỏi.
+                </p>
+                <input id="participant-name" class="participant-input" type="text" maxlength="60" placeholder="Nhập tên để bắt đầu" aria-label="Tên người tham gia" autocomplete="name">
+                <div class="start-features">
+                    <span>⏱️ Theo dõi thời gian</span>
+                    <span>🎯 Câu hỏi rõ ràng</span>
+                    <span>✅ Phản hồi tức thì</span>
+                </div>
+                <button id="start-game-btn" class="btn-primary" style="font-size: 18px; padding: 18px 36px;">▶ BẮT ĐẦU LÀM BÀI</button>
+            </div>
+
+            <div id="quiz-body" class="hide">
+                <div class="quiz-stats">
+                    <span id="participant-name-display" class="participant-name-display"></span>
+                    <span id="question-tracker" style="color: var(--cyan);">CÂU HỎI 1 / 10</span>
+                    <div id="timer-badge" class="timer-badge">⏱️ <span id="time-left">30s</span></div>
+                    <div class="streak-badge">🔥 Streak: <span id="streak-count">0</span></div>
+                    <span id="score-live" style="color: var(--primary);">0/1 (0%)</span>
+                </div>
+                <div class="quiz-progress-bar">
+                    <div id="progress-fill" class="quiz-progress-fill"></div>
+                </div>
+                <div id="auto-next-bar" class="auto-next-bar hide"></div>
+                <div id="question-text" class="question-text">Sẵn sàng thử thách chưa?</div>
+                <div id="options-group" class="options-group"></div>
+                <button id="next-btn" class="btn-primary" disabled>CÂU TIẾP THEO ➔ (Tự chuyển sau 3s)</button>
+            </div>
+
+            <div id="result-body" class="result-card hide">
+                <div class="congrats-tag" id="congrats-tag">🎊 HOÀN THÀNH BÀI THI</div>
+                <div class="score-badge" id="final-score">0/0</div>
+                <h2 id="result-title" style="font-size: 36px; font-weight: 900; margin-bottom: 12px; background: linear-gradient(135deg, #fff, var(--cyan)); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">XUẤT SẮC HOÀN THÀNH!</h2>
+                <p id="final-participant" class="final-participant"></p>
+                <p id="final-msg" style="color: #cbd5e1; margin-bottom: 20px; font-size: 21px; line-height: 1.6; max-width: 720px; margin-left: auto; margin-right: auto;">Bạn đã hoàn thành xuất sắc bài thi!</p>
+                <div class="btn-row" style="margin-bottom: 12px;">
+                    <button id="export-json-btn" class="btn-secondary">📥 Xuất JSON</button>
+                    <button id="export-excel-btn" class="btn-secondary">📊 Xuất Excel</button>
+                </div>
+                <div class="btn-row" style="margin-bottom: 20px;">
+                    <button id="save-quiz-btn" class="btn-secondary">💾 Lưu Bộ Đề</button>
+                    <button id="restart-btn" class="btn-primary">🔄 Làm Lại</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI CREATOR -->
+        <div id="screen-ai" class="hide">
+            <div class="form-layout">
+                <div>
+                    <label class="form-label">Chọn Nhà Cung Cấp API (AI Provider):</label>
+                    <select id="ai-provider" class="form-select">
+                        <option value="groq">Groq Cloud AI (Siêu tốc độ - Miễn phí)</option>
+                        <option value="gemini">Google AI Studio / Gemini API (Miễn phí)</option>
+                        <option value="openrouter">OpenRouter (Đa mô hình & Fallback - Miễn phí)</option>
+                        <option value="mistral">Mistral AI (Model mạnh & ổn định)</option>
+                        <option value="huggingface">Hugging Face Serverless API (Miễn phí)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">API Key của Provider đã chọn:</label>
+                    <input type="password" id="ai-key" class="form-input" placeholder="Dán API Key vào đây...">
+                </div>
+                <div>
+                    <label class="form-label">Mô hình AI (Model):</label>
+                    <select id="ai-model" class="form-select"></select>
+                </div>
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                        <label class="form-label" style="margin-bottom: 0;">Nội dung bài học / Tài liệu chính:</label>
+                        <button type="button" id="btn-upload-ai-doc" style="background: rgba(6, 182, 212, 0.2); border: 1px solid var(--cyan); color: var(--cyan); padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;">📂 Tải file Word/PDF</button>
+                        <input type="file" id="ai-file-input" accept=".txt, .docx, .pdf" class="hide">
+                    </div>
+                    <textarea id="ai-doc" class="form-input" placeholder="Nhập, dán văn bản, tài liệu hoặc tải file Word/PDF..."></textarea>
+                    <div id="ai-doc-hint" class="doc-length-hint">0 / 12,000 ký tự</div>
+                </div>
+                <div>
+                    <label class="form-label">🎯 Yêu cầu chi tiết / Định hướng đề (Tùy chọn):</label>
+                    <textarea id="ai-custom-prompt" class="form-input" style="min-height: 60px;" placeholder="Ví dụ: Tập trung bài tập tính toán, độ khó cao..."></textarea>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <div style="flex: 1;">
+                        <label class="form-label">Số lượng câu hỏi:</label>
+                        <input type="number" id="ai-count" class="form-input" value="10" min="1" max="50">
+                    </div>
+                    <div style="flex: 1;">
+                        <label class="form-label">Thời gian/câu (giây):</label>
+                        <input type="number" id="ai-timer" class="form-input" value="30" min="5" max="300">
+                    </div>
+                </div>
+                <button id="ai-gen-btn" class="btn-primary">⚡ BẮT ĐẦU TẠO CÂU HỎI BẰNG AI</button>
+            </div>
+        </div>
+
+        <!-- FILE UPLOAD -->
+        <div id="screen-upload" class="hide">
+            <div id="drop-zone" class="drop-zone" onclick="document.getElementById('file-input').click()">
+                <div style="font-size: 48px; margin-bottom: 12px;">📂</div>
+                <div style="font-weight: 800; color: white; margin-bottom: 6px; font-size: 18px;">Tải Lên Tệp Dữ Liệu Bộ Đề</div>
+                <div style="font-size: 14px; color: var(--text-sub); line-height: 1.6;">
+                    <b>Excel/CSV/JSON</b> — nạp đề trắc nghiệm sẵn có<br>
+                    <b>Word/PDF</b> — trích văn bản, chuyển sang tab AI tạo đề<br>
+                    <span style="font-size: 12px;">Excel: Cột A=Câu hỏi, B-E=Đáp án, F=Đáp án đúng (0-3 hoặc A-D)</span>
+                </div>
+                <input type="file" id="file-input" accept=".json, .xlsx, .xls, .csv, .docx, .pdf, .txt" class="hide">
+            </div>
+            <div id="upload-status" class="upload-status hide"></div>
+        </div>
+
+        <!-- LIBRARY -->
+        <div id="screen-library" class="hide">
+            <div class="section-card">
+                <div class="section-title">
+                    <span>💾 Bộ Đề Đã Lưu</span>
+                    <button id="save-from-library-btn" class="btn-secondary btn-sm">+ Lưu bộ đề hiện tại</button>
+                </div>
+                <div id="saved-quizzes-list" class="saved-list"></div>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><span>📊 Lịch Sử Làm Bài</span></div>
+                <div id="history-list" class="history-list"></div>
+            </div>
+            <div class="btn-row" style="margin-top: 16px;">
+                <button id="export-json-library-btn" class="btn-secondary">📥 Xuất JSON hiện tại</button>
+                <button id="export-excel-library-btn" class="btn-secondary">📊 Xuất Excel hiện tại</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="bgm-audio" loop preload="none"></audio>
+    <script src="TracnghiemAI.js?v=28"></script>
+</body>
+</html>
