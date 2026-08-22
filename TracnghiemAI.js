@@ -1388,6 +1388,40 @@ const exportExcelLibraryBtn = document.getElementById('export-excel-library-btn'
 if (exportJsonLibraryBtn) exportJsonLibraryBtn.addEventListener('click', () => exportQuizJSON(quizData));
 if (exportExcelLibraryBtn) exportExcelLibraryBtn.addEventListener('click', () => exportQuizExcel(quizData));
 
+// --- Settings Modal ---
+const settingsBtn = document.getElementById('settings-btn');
+const settingsModal = document.getElementById('settings-modal');
+const settingsOverlay = document.getElementById('settings-overlay');
+const settingsClose = document.getElementById('settings-close');
+const settingsSave = document.getElementById('settings-save');
+
+function openSettingsModal() {
+    if (settingsModal) settingsModal.classList.remove('hide');
+}
+
+function closeSettingsModal() {
+    if (settingsModal) settingsModal.classList.add('hide');
+}
+
+if (settingsBtn) {
+    settingsBtn.addEventListener('click', openSettingsModal);
+}
+
+if (settingsClose) {
+    settingsClose.addEventListener('click', closeSettingsModal);
+}
+
+if (settingsOverlay) {
+    settingsOverlay.addEventListener('click', closeSettingsModal);
+}
+
+if (settingsSave) {
+    settingsSave.addEventListener('click', () => {
+        closeSettingsModal();
+        showToast('Cài đặt đã được lưu thành công!', 'success');
+    });
+}
+
 // Expose for inline onclick handlers
 window.loadSavedQuiz = loadSavedQuiz;
 window.deleteSavedQuiz = deleteSavedQuiz;

@@ -55,6 +55,7 @@
                     <span id="sound-icon">⏸</span>
                     <span id="sound-text">Bật Nhạc</span>
                 </button>
+                <button id="settings-btn" class="icon-btn" aria-label="Cài đặt" title="Cài đặt">⚙️</button>
             </div>
         </div>
 
@@ -68,9 +69,9 @@
         <!-- PLAY SCREEN -->
         <div id="screen-play">
             <div id="start-screen" class="start-card">
-                <div class="start-hero-icon">◉</div>
-                <div class="start-badge">Bắt đầu trải nghiệm</div>
-                <h2 class="start-title">Sẵn sàng chinh phục thử thách?</h2>
+                <div class="start-hero-icon">✨</div>
+                <div class="start-badge"><span class="small-star">✨</span> <span class="small-star">✨</span> <span class="small-star">✨</span></div>
+                <h2 class="start-title">Bạn đã Sẵn sàng chinh phục thử thách chưa?</h2>
                 <p class="start-info secondary">
                     Khám phá kiến thức, bứt phá điểm số và nhận phản hồi tức thì qua <b id="total-questions-tag" style="color: var(--cyan);">1</b> câu hỏi.
                 </p>
@@ -120,24 +121,6 @@
         <!-- AI CREATOR -->
         <div id="screen-ai" class="hide">
             <div class="form-layout">
-                <div>
-                    <label class="form-label">Chọn Nhà Cung Cấp API (AI Provider):</label>
-                    <select id="ai-provider" class="form-select">
-                        <option value="groq">Groq Cloud AI (Siêu tốc độ - Miễn phí)</option>
-                        <option value="gemini">Google AI Studio / Gemini API (Miễn phí)</option>
-                        <option value="openrouter">OpenRouter (Đa mô hình & Fallback - Miễn phí)</option>
-                        <option value="mistral">Mistral AI (Model mạnh & ổn định)</option>
-                        <option value="huggingface">Hugging Face Serverless API (Miễn phí)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="form-label">API Key của Provider đã chọn:</label>
-                    <input type="password" id="ai-key" class="form-input" placeholder="Dán API Key vào đây...">
-                </div>
-                <div>
-                    <label class="form-label">Mô hình AI (Model):</label>
-                    <select id="ai-model" class="form-select"></select>
-                </div>
                 <div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
                         <label class="form-label" style="margin-bottom: 0;">Nội dung bài học / Tài liệu chính:</label>
@@ -196,6 +179,40 @@
             <div class="btn-row" style="margin-top: 16px;">
                 <button id="export-json-library-btn" class="btn-secondary">📥 Xuất JSON hiện tại</button>
                 <button id="export-excel-library-btn" class="btn-secondary">📊 Xuất Excel hiện tại</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="settings-modal hide" role="dialog" aria-modal="true">
+        <div class="settings-overlay" id="settings-overlay"></div>
+        <div class="settings-dialog">
+            <div class="settings-header">
+                <h2>⚙️ Cài đặt AI</h2>
+                <button id="settings-close" class="settings-close-btn" aria-label="Đóng">&times;</button>
+            </div>
+            <div class="settings-body">
+                <div class="settings-field">
+                    <label class="form-label">🏢 Nhà cung cấp AI:</label>
+                    <select id="ai-provider" class="form-input">
+                        <option value="gemini">Google Gemini (Khuyên dùng)</option>
+                        <option value="openrouter">OpenRouter (Miễn phí)</option>
+                        <option value="groq">Groq (Siêu nhanh)</option>
+                        <option value="mistral">Mistral AI</option>
+                        <option value="huggingface">HuggingFace (Miễn phí)</option>
+                    </select>
+                </div>
+                <div class="settings-field">
+                    <label class="form-label">🔑 API Key:</label>
+                    <input type="password" id="ai-key" class="form-input" placeholder="Nhập API key...">
+                </div>
+                <div class="settings-field">
+                    <label class="form-label">🤖 Mô hình AI:</label>
+                    <select id="ai-model" class="form-input"></select>
+                </div>
+            </div>
+            <div class="settings-footer">
+                <button id="settings-save" class="btn-primary">💾 Lưu cài đặt</button>
             </div>
         </div>
     </div>

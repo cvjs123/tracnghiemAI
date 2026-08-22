@@ -512,23 +512,71 @@ body {
 }
 
 .start-hero-icon {
-    font-size: 59.8px;
+    font-size: 36px;
     margin-bottom: 12px;
     color: var(--cyan);
     line-height: 1;
+    animation: sparkle-bounce 2s ease-in-out infinite;
+    display: inline-block;
+}
+
+@keyframes sparkle-bounce {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    25% {
+        opacity: 0.8;
+        transform: scale(1.1) translateY(-8px);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.15) translateY(0);
+    }
+    75% {
+        opacity: 0.9;
+        transform: scale(1.05) translateY(-4px);
+    }
+}
+
+@keyframes stars-twinkle {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    25% {
+        opacity: 0.6;
+        transform: scale(0.95);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    75% {
+        opacity: 0.7;
+        transform: scale(0.98);
+    }
 }
 
 .start-badge {
     display: inline-flex;
     padding: 6px 10px;
     border-radius: 999px;
-    background: rgba(6, 182, 212, 0.12);
+    background: transparent;
     color: var(--cyan);
-    font-size: 14.3px;
+    font-size: 24px;
     font-weight: 800;
-    letter-spacing: 0.6px;
+    letter-spacing: 12px;
     margin-bottom: 10px;
     text-transform: uppercase;
+    animation: stars-twinkle 2.5s ease-in-out infinite;
+    gap: 12px;
+}
+
+.small-star {
+    font-size: 36px;
+    display: inline-block;
+    animation: sparkle-bounce 2s ease-in-out infinite;
 }
 
 .start-title {
@@ -1055,6 +1103,161 @@ textarea.form-input { resize: vertical; min-height: 90px; user-select: text; }
     }
 }
 
+/* --- Settings Modal Popup --- */
+.settings-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(3, 7, 18, 0.85);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.settings-modal.hide {
+    display: none;
+}
+
+.settings-overlay {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+}
+
+.settings-dialog {
+    position: relative;
+    width: min(600px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 32px;
+    border: 2px solid var(--primary);
+    border-radius: 24px;
+    background: linear-gradient(145deg, rgba(30, 45, 80, 0.98), rgba(40, 55, 95, 0.96));
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(124, 58, 237, 0.6);
+    color: var(--text-main);
+    animation: slideUp 0.4s ease-out;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.settings-header h2 {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 0;
+}
+
+.settings-close-btn {
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: var(--text-sub);
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.settings-close-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--text-main);
+}
+
+.settings-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.settings-field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings-field .form-label {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--cyan);
+    text-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+}
+
+.settings-field .form-input,
+.settings-field .form-select {
+    background: rgba(40, 60, 100, 0.8);
+    border: 2px solid rgba(124, 58, 237, 0.5);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--text-main);
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.settings-field .form-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.settings-field .form-input:focus,
+.settings-field .form-select:focus {
+    background: rgba(60, 80, 130, 0.9);
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.6);
+}
+
+/* Ensure select options are readable */
+.settings-field select option {
+    background: rgba(30, 45, 80, 0.95);
+    color: var(--text-main);
+    padding: 10px;
+}
+
+.settings-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.settings-footer .btn-primary {
+    padding: 12px 28px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 @media (max-width: 520px) {
     .app-container { width: 100%; max-width: none; padding: 24px 16px; }
     .brand-title { font-size: 44.2px; }
@@ -1068,4 +1271,6 @@ textarea.form-input { resize: vertical; min-height: 90px; user-select: text; }
     .ai-success-dialog h2 { font-size: 30px; }
     .ai-success-dialog p { font-size: 23px; }
     .ai-success-dialog .btn-primary { font-size: 24px; }
+    .settings-dialog { padding: 24px 20px; }
+    .settings-header h2 { font-size: 22px; }
 }
