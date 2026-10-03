@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     --bg-dark: #090d16;
     --card-bg: rgba(21, 30, 49, 0.85);
     --primary: #7c3aed;
@@ -347,7 +347,7 @@ body {
 }
 
 .question-text {
-    font-size: 46.8px;
+    font-size: 56.16px;
     font-weight: 800;
     line-height: 1.6;
     letter-spacing: 0.8px;
@@ -385,8 +385,8 @@ body {
 }
 
 .options-group {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 14px;
     margin-bottom: 24px;
 }
@@ -396,7 +396,7 @@ body {
     border: 2px solid var(--border);
     border-radius: 16px;
     padding: 21px 26px;
-    font-size: 32.8px;
+    font-size: 39.36px;
     font-weight: 700;
     letter-spacing: 0.3px;
     color: var(--text-main);
@@ -1262,8 +1262,9 @@ textarea.form-input { resize: vertical; min-height: 90px; user-select: text; }
     .app-container { width: 100%; max-width: none; padding: 24px 16px; }
     .brand-title { font-size: 44.2px; }
     .nav-item { font-size: 18.2px; padding: 12px 6px; }
-    .question-text { font-size: 37.44px; }
-    .option-card { font-size: 23.4px; }
+    .question-text { font-size: 44.93px; }
+    .options-group { grid-template-columns: 1fr; }
+    .option-card { font-size: 28.08px; }
     .quiz-stats { font-size: 19.5px; }
     .participant-input { font-size: 24.7px; }
     .start-card { padding: 24px 14px; }

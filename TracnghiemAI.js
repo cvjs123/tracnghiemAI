@@ -1,4 +1,4 @@
-﻿/* QuizCraft Pro - Main Application Logic */
+/* QuizCraft Pro - Main Application Logic */
 
 const MAX_DOC_CHARS = 12000;
 const AI_RETRY_COUNT = 2;
@@ -114,7 +114,12 @@ if (aiSuccessOk) {
 function formatMathText(text) {
     if (!text) return "";
 
-    let formatted = text.replace(/\$([^$]+)\$/g, (match, p1) => {
+    // Parse Markdown images: ![alt text](url)
+    let formatted = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, url) => {
+        return `<img src="${url.trim()}" alt="${alt.trim()}" style="max-width: 100%; max-height: 250px; border-radius: 8px; margin-top: 10px; display: block;" />`;
+    });
+
+    formatted = formatted.replace(/\$([^$]+)\$/g, (match, p1) => {
         try {
             return katex.renderToString(p1.trim(), { displayMode: false, throwOnError: false });
         } catch (e) {
